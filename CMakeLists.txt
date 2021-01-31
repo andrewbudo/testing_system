@@ -38,7 +38,6 @@ if (MSVC)
     target_compile_options(tests PRIVATE
         /W4
     )
-)
 else ()
     target_compile_options(helloworld_cli PRIVATE
         -Werror -Wall -Wimplicit-fallthrough -pedantic-errors
@@ -49,7 +48,6 @@ else ()
     target_compile_options(tests PRIVATE
         -Werror -Wall -Wimplicit-fallthrough -pedantic-errors
     )
-)
 endif()
 
 install(TARGETS helloworld_cli RUNTIME DESTINATION bin)
