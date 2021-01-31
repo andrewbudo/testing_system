@@ -19,6 +19,19 @@ set_target_properties(helloworld_cli helloworld test_version PROPERTIES
     COMPILE_OPTIONS "-Wpedantic;-Wall;-Wextra"
 )
 
+if (MSVC)
+        set_target_properties(helloworld_cli helloworld test_version PROPERTIES
+            CXX_STANDARD 17
+            CXX_STANDARD_REQUIRED ON
+)
+else ()
+        set_target_properties(helloworld_cli helloworld test_version PROPERTIES
+            CXX_STANDARD 17
+            CXX_STANDARD_REQUIRED ON
+            COMPILE_OPTIONS "-Wpedantic;-Wall;-Wextra"
+)
+endif()
+
 set_target_properties(test_version PROPERTIES
     COMPILE_DEFINITIONS BOOST_TEST_DYN_LINK
     INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIR}
