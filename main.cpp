@@ -1,12 +1,11 @@
 #include "lib.h"
 #include <iostream>
-#include <spdlog/spdlog.h>
+#include <string>
 
 int main()
 {
-    //auto logger = spdlog::stdout_logger_mt("console");
-    //logger->info("version {} was started", version());
-    std::cout << version() << std::endl;    
-
+    auto [major, minor, patch] = version();
+    std::cout << message() << "\nVersion "
+              << major << '.' << minor << '.' << patch << '\n';
     return 0;
 }

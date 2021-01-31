@@ -2,7 +2,12 @@
 
 #include "version.h"
 
-int version()
+Version version()
 {
-    return PROJECT_VERSION_PATCH;
+    return {PROJECT_VERSION_MAJOR, PROJECT_VERSION_MINOR, PROJECT_VERSION_PATCH};
+}
+
+std::string message()
+{
+    return "Hello world!\n";
 }

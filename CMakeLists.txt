@@ -1,51 +1,56 @@
 cmake_minimum_required(VERSION 3.2)
 
-project(bntu_testing_system VERSION 0.0.1$ENV{TRAVIS_BUILD_NUMBER})
-
-find_package(Threads REQUIRED)
-find_package(Boost COMPONENTS unit_test_framework REQUIRED)
-
-configure_file(version.h.in ${PROJECT_SOURCE_DIR}/version.h)
-
-add_executable(helloworld_cli main.cpp)
-
-add_library(helloworld lib.cpp)
-
-add_executable(test_version test_version.cpp)
-
-set_target_properties(helloworld_cli helloworld test_version PROPERTIES
-    CXX_STANDARD 17
-    CXX_STANDARD_REQUIRED ON
-    COMPILE_OPTIONS "-Wpedantic;-Wall;-Wextra"
-)
-
-if (MSVC)
-        set_target_properties(helloworld_cli helloworld test_version PROPERTIES
-            CXX_STANDARD 17
-            CXX_STANDARD_REQUIRED ON
-)
-else ()
-        set_target_properties(helloworld_cli helloworld test_version PROPERTIES
-            CXX_STANDARD 17
-            CXX_STANDARD_REQUIRED ON
-            COMPILE_OPTIONS "-Wpedantic;-Wall;-Wextra"
-)
+if(DEFINED ENV{TRAVIS_BUILD_NUMBER})
+	project(helloworld VERSION 0.0.$ENV{TRAVIS_BUILD_NUMBER})
+else()
+	project(helloworld VERSION 0.0.1)
 endif()
 
-set_target_properties(test_version PROPERTIES
-    COMPILE_DEFINITIONS BOOST_TEST_DYN_LINK
-    INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIR}
+configure_file(version.h.in version.h)
+find_package(Boost COMPONENTS unit_test_framework REQUIRED)
+
+add_executable(helloworld_cli main.cpp)
+add_library(helloworld lib.cpp)
+add_executable(tests tests.cpp)
+
+set_target_properties(helloworld_cli helloworld tests PROPERTIES
+	CXX_STANDARD 17
+	CXX_STANDARD_REQUIRED ON
+	CXX_EXTENSIONS OFF
 )
 
-target_link_libraries(helloworld_cli
-    helloworld
-    Threads::Threads
+target_link_libraries(helloworld_cli PRIVATE helloworld)
+
+target_link_libraries(
+	tests 
+	${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} 
+	helloworld
 )
 
-target_link_libraries(test_version
-    ${Boost_LIBRARIES}
-    helloworld
+
+if (MSVC)
+    target_compile_options(helloworld_cli PRIVATE
+        /W4
+    )
+    target_compile_options(helloworld PRIVATE
+        /W4
+    )
+    target_compile_options(tests PRIVATE
+        /W4
+    )
 )
+else ()
+    target_compile_options(helloworld_cli PRIVATE
+        -Werror -Wall -Wimplicit-fallthrough -pedantic-errors
+    )
+    target_compile_options(helloworld PRIVATE
+        -Werror -Wall -Wimplicit-fallthrough -pedantic-errors
+    )
+    target_compile_options(tests PRIVATE
+        -Werror -Wall -Wimplicit-fallthrough -pedantic-errors
+    )
+)
+endif()
 
 install(TARGETS helloworld_cli RUNTIME DESTINATION bin)
 
@@ -57,11 +62,9 @@ set(CPACK_PACKAGE_VERSION_PATCH "${PROJECT_VERSION_PATCH}")
 
 set(CPACK_PACKAGE_CONTACT b490@ya.ru)
 
-set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
-
 include(CPack)
 
 enable_testing()
 
-add_test(helloworld_tests test_version)
+add_test(tests tests)
 
