@@ -1,6 +1,6 @@
 # BNTU testing system
 
-BNTU_testing_system is a small project for testing students exercises after the theoretical lessons.  [![Build Status](https://travis-ci.org/andrewbudo/testing_system.svg?branch=main)](https://travis-ci.org/andrewbudo/testing_system)]
+BNTU_testing_system is a small project for testing students exercises after the theoretical lessons.  [![Build Status](https://travis-ci.org/andrewbudo/testing_system.svg?branch=main)](https://travis-ci.org/andrewbudo/testing_system)
 
 ## Table of Contents
 - [Dependencies](#dependencies)
