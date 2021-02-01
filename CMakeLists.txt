@@ -19,16 +19,17 @@ set_target_properties(helloworld_cli helloworld tests PROPERTIES
 	CXX_EXTENSIONS OFF
 )
 
-target_link_libraries(helloworld_cli PRIVATE helloworld)
+target_include_directories(helloworld PRIVATE "${CMAKE_BINARY_DIR}")
 
-target_link_libraries(
-	tests 
-	${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} 
-	helloworld
+set_target_properties(tests PROPERTIES
+    COMPILE_DEFINITIONS BOOST_TEST_DYN_LINK
+    INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIR}
 )
 
+target_link_libraries(helloworld_cli PRIVATE helloworld)
+target_link_libraries(tests ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} helloworld)
 
-if (MSVC)
+if(MSVC)
     target_compile_options(helloworld_cli PRIVATE
         /W4
     )
@@ -38,7 +39,7 @@ if (MSVC)
     target_compile_options(tests PRIVATE
         /W4
     )
-else ()
+else()
     target_compile_options(helloworld_cli PRIVATE
         -Werror -Wall -Wimplicit-fallthrough -pedantic-errors
     )
@@ -65,4 +66,3 @@ include(CPack)
 enable_testing()
 
 add_test(tests tests)
-
